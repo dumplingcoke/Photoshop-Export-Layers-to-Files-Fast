@@ -1,4 +1,4 @@
-// NAME:
+﻿// NAME:
 //  Export Layers To Files
 
 // VERSION:
@@ -11,6 +11,8 @@
 
 // enable double-clicking from Finder/Explorer (CS2 and higher)
 #target photoshop
+
+var docName = app.activeDocument.name.replace(/\.[^\.]+$/, ''); // 获取文件名
 
 var BATCH_OPERATION = false;
 
@@ -349,6 +351,7 @@ var DEFAULT_SETTINGS = {
     bmpRleCompression: app.stringIDToTypeID("bmpRleCompression"),
     delimiter: app.stringIDToTypeID("delimiter"),
     destination: app.stringIDToTypeID("destFolder"),
+    destinationAsDoc: app.stringIDToTypeID("destinationAsDoc"),
     exportBackground: app.stringIDToTypeID("exportBackground"),
     exportForeground: app.stringIDToTypeID("exportForeground"),
     exportLayerTarget: app.stringIDToTypeID("exportLayerTarget"),
@@ -407,6 +410,7 @@ var DEFAULT_SETTINGS = {
     trim: app.stringIDToTypeID("trim"),
     trimValue: app.stringIDToTypeID("trimValue"),
     useDelimiter: app.stringIDToTypeID("useDelimiter"),
+    useDocNamePrefix: app.stringIDToTypeID("useDocNamePrefix"),
     visibleOnly: app.stringIDToTypeID('visibleOnly'),
 };
 
@@ -981,7 +985,16 @@ function getUniqueFileName(fileName, layer, index) {
         }
     }
 
-    fileName = prefs.destination + "/" + localFolders + fileName;
+    // 文件输出的最终路径和最终文件名
+    // 判断“PSD文件名作为前缀”复选框是否选上
+    if (prefs.useDocNamePrefix) {
+        // 选上“PSD文件名作为前缀”复选框后的文件名
+        fileName = prefs.destination + "/" + localFolders + docName + "_" + fileName;
+    }
+    else{
+        // 未选“PSD文件名作为前缀”复选框的文件名
+        fileName = prefs.destination + "/" + localFolders + fileName;
+    }
 
     // Check if the file already exists. In such case a numeric suffix will be added to disambiguate.
     var uniqueName = fileName;
@@ -1175,6 +1188,7 @@ function repaintProgressBar(win, force /* = false*/ ) {
 
 function showDialog() {
     // Build dialog
+    // 创建对话框
     var dialog;
     try {
         dialog = makeMainDialog();
@@ -1187,8 +1201,34 @@ function showDialog() {
 
     // ===================
     // DESTINATION SECTION
+    // 输出部分
     // ===================
-    fields.txtDestination.text = prefs.destination;
+    if(prefs.destinationAsDoc) 
+        fields.txtDestination.text = app.activeDocument.path;
+    else        
+        fields.txtDestination.text = prefs.destination;
+
+    fields.txtDestination.enabled = !prefs.destinationAsDoc;
+    fields.btnBrowse.enabled = !prefs.destinationAsDoc;
+    fields.cbDestinationAsDoc.value = prefs.destinationAsDoc;
+
+    fields.cbDestinationAsDoc.onClick= function() {
+        fields.txtDestination.enabled = !this.value;
+        fields.btnBrowse.enabled = !this.value;
+
+        if(this.value) 
+        {
+            prefs.destination = app.activeDocument.path;
+            fields.txtDestination.text = app.activeDocument.path;
+        }
+        else
+        {
+            prefs.destination = getSettings().destination;
+            fields.txtDestination.text = prefs.destination;
+        }
+    };
+
+    
     fields.btnBrowse.onClick = function() {
         var newFilePath = Folder.selectDialog("Select destination folder", prefs.destination);
         if (newFilePath) {
@@ -1199,6 +1239,7 @@ function showDialog() {
 
     // ==============
     // EXPORT SECTION
+    // 导出部分
     // ==============
     fields.radioAll.onClick = function() {
         prefs.exportLayerTarget = ExportLayerTarget.ALL_LAYERS;
@@ -1231,7 +1272,9 @@ function showDialog() {
 
     // =================
     // FILENAMES SECTION
+    // 文件名部分
     // =================
+    
     fields.ddNameAs.selection = FileNameType.getIndex(prefs.nameFiles);
     fields.ddLetterCasing.selection = LetterCase.getIndex(prefs.letterCase);
 
@@ -1239,6 +1282,8 @@ function showDialog() {
     fields.cbDelimiter.onClick = function() {
         fields.txtDelimiter.enabled = this.value;
     };
+
+    fields.docNamePrefix.value = prefs.useDocNamePrefix;
 
     fields.txtDelimiter.enabled = prefs.useDelimiter;
     fields.txtDelimiter.text = prefs.delimiter;
@@ -1548,6 +1593,7 @@ function saveSettings(dialog) {
         // common
 
     // We use the value of input fields to save the settings
+    //我们使用输入字段的值来保存设置
     var exportLayerTarget = ExportLayerTarget.ALL_LAYERS;
     if (fields.radioSelected.value) {
         exportLayerTarget = ExportLayerTarget.SELECTED_LAYERS;
@@ -1559,6 +1605,7 @@ function saveSettings(dialog) {
 
     desc.putString(DEFAULT_SETTINGS.delimiter, fields.txtDelimiter.text);
     desc.putString(DEFAULT_SETTINGS.destination, fields.txtDestination.text);
+    desc.putBoolean(DEFAULT_SETTINGS.destinationAsDoc, fields.cbDestinationAsDoc.value);
     desc.putBoolean(DEFAULT_SETTINGS.exportBackground, fields.cbBackground.value);
     desc.putBoolean(DEFAULT_SETTINGS.exportForeground, fields.cbForeground.value);
     desc.putInteger(DEFAULT_SETTINGS.exportLayerTarget, exportLayerTarget);
@@ -1626,10 +1673,13 @@ function saveSettings(dialog) {
     desc.putBoolean(DEFAULT_SETTINGS.trim, fields.cbTrim.value);
     desc.putInteger(DEFAULT_SETTINGS.trimValue, fields.cbTrim.value ? TrimPrefType.forIndex(fields.ddTrim.selection.index) : TrimPrefType.DONT_TRIM);
     desc.putBoolean(DEFAULT_SETTINGS.useDelimiter, fields.cbDelimiter.value);
+    desc.putBoolean(DEFAULT_SETTINGS.useDocNamePrefix, fields.docNamePrefix.value);
     desc.putBoolean(DEFAULT_SETTINGS.visibleOnly, fields.cbVisibleOnly.value);
 
     // Save settings.
+    // 保存设置
     // "true" means setting persists across Photoshop launches.
+    //  “true” 意味着Photoshop启动时依然存在
     app.putCustomOptions(USER_SETTINGS_ID, desc, true);
 }
 
@@ -1654,6 +1704,7 @@ function getDefaultSettings() {
             bmpRleCompression: false,
             delimiter: "_",
             destination: destinationDefault,
+            destinationAsDoc: false,
             exportBackground: false,
             exportForeground: false,
             exportLayerTarget: ExportLayerTarget.ALL_LAYERS,
@@ -1711,6 +1762,7 @@ function getDefaultSettings() {
             trim: false,
             trimValue: TrimPrefType.INDIVIDUAL,
             useDelimiter: false,
+            useDocNamePrefix: false,
             visibleOnly: false,
         };
 
@@ -1736,6 +1788,7 @@ function getSettings(formatOpts) {
             bmpRleCompression: desc.getBoolean(DEFAULT_SETTINGS.bmpRleCompression),
             delimiter: desc.getString(DEFAULT_SETTINGS.delimiter),
             destination: desc.getString(DEFAULT_SETTINGS.destination),
+            destinationAsDoc: desc.getBoolean(DEFAULT_SETTINGS.destinationAsDoc),
             exportBackground: desc.getBoolean(DEFAULT_SETTINGS.exportBackground),
             exportForeground: desc.getBoolean(DEFAULT_SETTINGS.exportForeground),
             exportLayerTarget: desc.getInteger(DEFAULT_SETTINGS.exportLayerTarget),
@@ -1794,8 +1847,8 @@ function getSettings(formatOpts) {
             trim: desc.getBoolean(DEFAULT_SETTINGS.trim),
             trimValue: desc.getInteger(DEFAULT_SETTINGS.trimValue),
             useDelimiter: desc.getBoolean(DEFAULT_SETTINGS.useDelimiter),
+            useDocNamePrefix: desc.getBoolean(DEFAULT_SETTINGS.useDocNamePrefix),
             visibleOnly: desc.getBoolean(DEFAULT_SETTINGS.visibleOnly),
-
         };
     } catch (e) {
     }
@@ -2465,6 +2518,7 @@ function getDialogFields(dialog) {
     return {
         btnBrowse: dialog.findElement("btnBrowse"),
         txtDestination: dialog.findElement("txtDestination"),
+        cbDestinationAsDoc: dialog.findElement("cbDestinationAsDoc"),
 
         radioAll: dialog.findElement("radioAll"),
         radioSelected: dialog.findElement("radioSelected"),
@@ -2474,6 +2528,7 @@ function getDialogFields(dialog) {
 
         ddNameAs: dialog.findElement("ddNameAs"),
         cbDelimiter: dialog.findElement("cbDelimiter"),
+        docNamePrefix: dialog.findElement("docNamePrefix"),
         txtDelimiter: dialog.findElement("txtDelimiter"),
         ddLetterCasing: dialog.findElement("ddLetterCasing"),
         txtPrefix: dialog.findElement("txtPrefix"),
@@ -2571,7 +2626,7 @@ function getDialogFields(dialog) {
 function makeMainDialog() {    
     // DIALOG
     // ======
-    var dialog = new Window("dialog", undefined, undefined, {closeButton: false, resizeable: true}); 
+    var dialog = new Window("dialog", undefined, undefined, {closeButton: false, resizeable: false}); 
     dialog.text = "Export Layers To Files v2.7.1"; 
     dialog.orientation = "column"; 
     dialog.alignChildren = ["center","center"]; 
@@ -2599,19 +2654,36 @@ function makeMainDialog() {
     // ==============
     var pnlDestination = grpCol1.add("panel", undefined, undefined, {name: "pnlDestination"}); 
     pnlDestination.text = "Output Destination"; 
-    pnlDestination.orientation = "row"; 
+    pnlDestination.orientation = "column"; 
     pnlDestination.alignChildren = ["left","center"]; 
     pnlDestination.spacing = 10; 
     pnlDestination.margins = 10; 
     pnlDestination.alignment = ["left","center"]; 
 
-    var txtDestination = pnlDestination.add('edittext {properties: {name: "txtDestination"}}'); 
+    var grpDestination = pnlDestination.add("group", undefined, {name: "grpTrim"}); 
+    grpDestination.orientation = "row"; 
+    grpDestination.alignChildren = ["left","center"]; 
+    grpDestination.spacing = 10; 
+    grpDestination.margins = 0; 
+
+    var txtDestination = grpDestination.add('edittext {properties: {name: "txtDestination"}}'); 
     txtDestination.helpTip = "Where to save the files"; 
     txtDestination.preferredSize.width = 200; 
 
-    var btnBrowse = pnlDestination.add("button", undefined, undefined, {name: "btnBrowse"}); 
+    var btnBrowse = grpDestination.add("button", undefined, undefined, {name: "btnBrowse"}); 
     btnBrowse.text = "Browse..."; 
     btnBrowse.justify = "left"; 
+
+    var grpDestinationCb = pnlDestination.add("group", undefined, {name: "grpTrim"}); 
+    grpDestinationCb.orientation = "row"; 
+    grpDestinationCb.alignChildren = ["left","center"]; 
+    grpDestinationCb.spacing = 10; 
+    grpDestinationCb.margins = 0; 
+
+    var cbDestinationAsDoc = grpDestinationCb.add('checkbox {properties: {name: "cbDestinationAsDoc"}}'); 
+    cbDestinationAsDoc.helpTip = "Output Destination as Document path"; 
+    cbDestinationAsDoc.preferredSize.width = 200; 
+    cbDestinationAsDoc.text = "Destination as Document path"; 
 
     // PNLEXPORT
     // =========
@@ -2682,6 +2754,8 @@ function makeMainDialog() {
     var ddNameAs_array = ["Use layer name (strip extension)","Use layer name (keep extension)","Use layer and parent group names","Use index descending","Use index ascending"]; 
     var ddNameAs = pnlNameFiles.add("dropdownlist", undefined, undefined, {name: "ddNameAs", items: ddNameAs_array}); 
     ddNameAs.selection = 0; 
+    
+
 
     // GRPDELIMITER
     // ============
@@ -2720,8 +2794,14 @@ function makeMainDialog() {
     var grpPrefixSuffixWrapper = pnlNameFiles.add("group", undefined, {name: "grpPrefixSuffixWrapper"}); 
     grpPrefixSuffixWrapper.orientation = "column"; 
     grpPrefixSuffixWrapper.alignChildren = ["left","center"]; 
-    grpPrefixSuffixWrapper.spacing = 0; 
+    grpPrefixSuffixWrapper.spacing = 5; 
     grpPrefixSuffixWrapper.margins = 0; 
+    
+    // Retain the PSD file name as a prefix
+    // 保留PSD文件名作为图层名前缀
+    var docNamePrefix = grpPrefixSuffixWrapper.add("checkbox", undefined, undefined, {name: "docNamePrefix"}); 
+    docNamePrefix.helpTip = "Keep the file name as a prefix, example: PSDname_LayerName"; 
+    docNamePrefix.text = "Retain the file name as a prefix"; 
 
     // GRPPREFIXSUFFIXLABEL
     // ====================
