@@ -1,5 +1,3 @@
-[English README.md](https://github.com/dumplingcoke/Photoshop-Export-Layers-to-Files-Fast/blob/main/README.md)
-
 # Photoshop-将图层导出为文件
 这个脚本可以将你的 Photoshop 文档中的图层导出为单独的文件，比 Adobe 内置脚本的速度要快得多。
 
