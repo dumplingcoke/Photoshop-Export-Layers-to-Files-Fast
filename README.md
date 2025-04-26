@@ -1,4 +1,4 @@
-英文原文链接：[https://github.com/dumplingcoke/Photoshop-Export-Layers-to-Files-Fast/blob/main/README_en.md](https://github.com/dumplingcoke/Photoshop-Export-Layers-to-Files-Fast/blob/main/README_en.md)
+[English README.md](https://github.com/dumplingcoke/Photoshop-Export-Layers-to-Files-Fast/blob/main/README_en.md)
 
 # Photoshop-Export-Layers-to-Files-Fast
 
