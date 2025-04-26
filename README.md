@@ -1,7 +1,3 @@
-当然可以！这是翻译后的文档，保留了原格式，并在开头添加了你要求的英文原文链接：
-
----
-
 英文原文链接：[https://github.com/dumplingcoke/Photoshop-Export-Layers-to-Files-Fast/blob/main/README_en.md](https://github.com/dumplingcoke/Photoshop-Export-Layers-to-Files-Fast/blob/main/README_en.md)
 
 # Photoshop-Export-Layers-to-Files-Fast
@@ -168,8 +164,3 @@ _免责声明：_ 本项目与 Adobe 无任何关联。如遇到任何与 Adobe 
 - 你的 Photoshop 版本及具体版本号
 - 截图（如果适用）
 - 可以重现问题的 `.psd` 文件（越简单越好）
-
----
-
-要不要我顺便也帮你做一个「中英文双语版」？如果需要，只要告诉我～要的话我还能帮你加个目录跳转按钮，阅读体验更顺畅！🎯  
-要继续吗？
