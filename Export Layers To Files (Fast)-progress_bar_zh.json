@@ -1,0 +1,29 @@
+palette {
+    text: "加载中",
+    preferredSize: [350, 60],
+    orientation: "column",
+    alignChildren: "fill",
+    barRow: Group {
+        orientation: "row",
+        bar: Progressbar {
+            preferredSize: [300, 16]
+        },
+        cancelBtn: Button {
+            text: "取消"
+        }
+    },
+    lblMessage: StaticText {
+        alignment: "left",
+        text: ""
+    },
+    warning: Panel {
+        orientation: "column",
+        alignChildren: "fill",
+        message: StaticText {
+            text: "不要在脚本运行时修改文档!",
+            properties: {
+                multiline: true
+            }
+        }
+    }
+}
