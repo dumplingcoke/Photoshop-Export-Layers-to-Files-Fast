@@ -19,8 +19,8 @@
 _免责声明：_ 本项目与 Adobe 无任何关联。如遇到任何与 Adobe 产品或脚本相关的问题，请直接联系 Adobe。虽然我们从未遇到问题，但**请自行承担使用本脚本的风险**。我们对任何数据丢失或 PSD 损坏不承担责任，因此请务必备份你的文件。
 
 - 前往[发布页面](https://github.com/antipalindrome/Photoshop-Export-Layers-to-Files-Fast/releases)下载[最新版本](https://github.com/antipalindrome/Photoshop-Export-Layers-to-Files-Fast/releases/latest)。
-- 在 Photoshop 中，依次点击 `文件 -> 脚本 -> 浏览...`，然后选择 `Export Layers To Files (Fast).jsx` 文件。
-  - 注意：脚本运行时需要 `Export Layers To Files (Fast)-progress_bar.json` 文件。否则会出现“进度条资源损坏”的错误。请确保 `.jsx` 和 `.json` 文件位于同一目录下。
+- 在 Photoshop 中，依次点击 `文件 -> 脚本 -> 浏览...`，然后选择 `将图层导出为文件.jsx` 文件。
+  - 注意：脚本运行时需要 `Export Layers To Files (Fast)-progress_bar_zh.json` 文件。否则会出现“进度条资源损坏”的错误。请确保 `.jsx` 和 `.json` 文件位于同一目录下。
 - 你也可以把脚本添加到 Photoshop 的脚本菜单中，只需将所有脚本文件复制到 `Photoshop > Presets > Scripts` 文件夹。
   - Windows: `/Program Files/Adobe/Adobe Photoshop 版本号/Presets/Scripts`
   - Mac: `/Applications/Adobe Photoshop 版本号/Presets/Scripts`
