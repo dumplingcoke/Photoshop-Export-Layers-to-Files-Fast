@@ -18,7 +18,8 @@
 
 _免责声明：_ 本项目与 Adobe 无任何关联。如遇到任何与 Adobe 产品或脚本相关的问题，请直接联系 Adobe。虽然我们从未遇到问题，但**请自行承担使用本脚本的风险**。我们对任何数据丢失或 PSD 损坏不承担责任，因此请务必备份你的文件。
 
-- 前往[发布页面](https://github.com/antipalindrome/Photoshop-Export-Layers-to-Files-Fast/releases)下载[最新版本](https://github.com/antipalindrome/Photoshop-Export-Layers-to-Files-Fast/releases/latest)。
+- 前往[发布页面](https://github.com/antipalindrome/Photoshop-Export-Layers-to-Files-Fast/releases)
+- 点击这里下载[最新版本](https://github.com/dumplingcoke/Photoshop-Export-Layers-to-Files-Fast/archive/refs/heads/main.zip)。
 - 在 Photoshop 中，依次点击 `文件 -> 脚本 -> 浏览...`，然后选择 `将图层导出为文件.jsx` 文件。
   - 注意：脚本运行时需要 `Export Layers To Files (Fast)-progress_bar_zh.json` 文件。否则会出现“进度条资源损坏”的错误。请确保 `.jsx` 和 `.json` 文件位于同一目录下。
 - 你也可以把脚本添加到 Photoshop 的脚本菜单中，只需将所有脚本文件复制到 `Photoshop > Presets > Scripts` 文件夹。
@@ -60,24 +61,24 @@ _免责声明：_ 本项目与 Adobe 无任何关联。如遇到任何与 Adobe 
 
 启用此选项后，你可以输入一个前缀，所有以该前缀命名的图层将在导出时被忽略。
 
-例如，如果你输入 `x`，那么所有以 `x` 开头的图层将不会被导出。
+例如，如果你输入 `！`，那么所有以 `！` 开头的图层将不会被导出。
 
 ### 文件命名
 
-| 选项 | 示例 |
-| :--- | :--- |
-| 使用图层名称（去除扩展名） | `layer-3.png` => `layer-3.png` |
-| 使用图层名称（保留扩展名） | `layer-3.png` => `layer-3.png.png` |
-| 使用图层+组名 | `group 1 > layer-3` => `group-1-layer-3.png` |
-| 按索引递减命名 | 顶层 `layer-10` => `01` |
-| 按索引递增命名 | 顶层 `layer-5` => `5` |
+| 选项 | 示例 | 备注 |
+| :--- | :--- | :--- |
+| 使用图层名称（去除扩展名） | `图层 1.png` => `图层 1.png` | 导出后只显示文件格式的后缀 |
+| 使用图层名称（保留扩展名） | `图层 1.png` => `图层 1.png.png` | 在文件后缀的基础上加上了图层名中的后缀 |
+| 使用图层+组名 | `组 1 > 图层 1` => `组 1 图层 1.png` | 图层名前加上了编组的名称 |
+| 按索引递减命名 | 最上方图层 `图层 10` => `01` |  |
+| 按索引递增命名 | 最上方图层 `图层 5` => `5` |  |
 
-### 使用自定义分隔符
+### 使用自定义图层名称的分隔符
 
-启用 `使用自定义分隔符` 后，可以用自定义字符替代文件名中的空格。由于 Photoshop 不支持文件名中包含空格，因此默认使用 `-`。
+启用 `自定义图层名称的分隔符` 后，可以用自定义字符替代图层名称中的空格。如果 Photoshop 版本不支持文件名中包含空格，默认使用 `-`。
 
 例如：
-`my layer 1` 将导出为 `my-layer-1`
+`图层 1` 将导出为 `图层-1`
 
 以下字符**不允许**作为分隔符使用：
 `\`、`/`、`*`、`?`、`|`、`.`、`:`、`"`、`<`、`>`、`%`、`,`、`;`、`=`
