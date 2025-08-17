@@ -10,8 +10,6 @@
 - 将图层导出为文件
 - 快速将图层导出为文件
 - 批量导出每一层图层脚本
-- Photoshop Export Layers to Files Fast简体中文
-- Photoshop Export Layers to Files Fast汉化
 
 # Photoshop将图层导出为文件
 
