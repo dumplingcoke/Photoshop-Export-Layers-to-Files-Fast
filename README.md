@@ -167,7 +167,7 @@ _免责声明：_ 本项目与 Adobe 无任何关联。如遇到任何与 Adobe 
 
 ## 反馈/报告错误
 
-请通过 GitHub 的问题反馈(issues)页面提交反馈、建议或 bug 报告。
+请通过 GitHub 的[问题反馈](https://github.com/antipalindrome/Photoshop-Export-Layers-to-Files-Fast/issues)页面提交反馈、建议或 bug 报告。
 
 反馈时请附上以下信息：
 
